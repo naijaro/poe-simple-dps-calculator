@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PoE Simple DPS Calculator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3">
+    <meta name="description" content="Online tool for dps calculation."/>
+    <meta name="keywords" content="pillars of eternity,dps calculator"/>
+    
+    <link rel="author" href="https://www.reddit.com/user/MaxQuest/">
+    <link rel="publisher" href="https://www.reddit.com/user/MaxQuest/">
+    <meta property='og:locale' content='en_US'>
+    <meta property='og:title' content='Pillars of Eternity Speed Calculator'>
+    <meta property='og:description' content='Online tool for calculation of attack speed and recovery duration.'>
+    <meta property='og:url' content='https://naijaro.github.io/poe-speed-calculator'>
+    <meta property='og:site_name' content='POE Speed Calculator'>
+    <meta property='og:image' content='http://d1079ywfijtdjs.cloudfront.net/eternity/media/wallpapers/logo/pe-wallpaper-logo-936x526.jpg'>
+    
+    <link rel="stylesheet" href="https://bootswatch.com/slate/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.css">
+    <!--
+    <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
+      inlining bootstrap-toggle css
+      -->
+    <style media="screen" type="text/css">
+     /*! =======================================================================
+      * Bootstrap Toggle: bootstrap-toggle.css v2.2.0
+      * http://www.bootstraptoggle.com
+      * ========================================================================
+      * Copyright 2014 Min Hur, The New York Times Company
+      * Licensed under MIT
+      * ======================================================================== */
+     .checkbox label .toggle,.checkbox-inline .toggle{margin-left:-20px;margin-right:5px}
+     .toggle{position:relative;overflow:hidden}
+     .toggle input[type=checkbox]{display:none}
+     .toggle-group{position:absolute;width:200%;top:0;bottom:0;left:0;transition:left .35s;-webkit-transition:left .35s;-moz-user-select:none;-webkit-user-select:none}
+     .toggle.off .toggle-group{left:-100%}
+     .toggle-on{position:absolute;top:0;bottom:0;left:0;right:50%;margin:0;border:0;border-radius:0}
+     .toggle-off{position:absolute;top:0;bottom:0;left:50%;right:0;margin:0;border:0;border-radius:0}
+     .toggle-handle{position:relative;margin:0 auto;padding-top:0;padding-bottom:0;height:100%;width:0;border-width:0 1px}
+     .toggle.btn{min-width:59px;min-height:34px}
+     .toggle-on.btn{padding-right:24px}
+     .toggle-off.btn{padding-left:24px}
+     .toggle.btn-lg{min-width:79px;min-height:45px}
+     .toggle-on.btn-lg{padding-right:31px}
+     .toggle-off.btn-lg{padding-left:31px}
+     .toggle-handle.btn-lg{width:40px}
+     .toggle.btn-sm{min-width:50px;min-height:30px}
+     .toggle-on.btn-sm{padding-right:20px}
+     .toggle-off.btn-sm{padding-left:20px}
+     .toggle.btn-xs{min-width:35px;min-height:22px}
+     .toggle-on.btn-xs{padding-right:12px}
+     .toggle-off.btn-xs{padding-left:12px}
+    </style>  
+    
+    <style media="screen" type="text/css">
+     /*! =======================================================================
+      * Poe Speed Calculator Toggle: v1.0
+      * https://naijaro.github.io/poe-speed-calculator/
+      * ========================================================================
+      * Copyright 2017 Naijaro (aka MaxQuest)
+      * Licensed under MIT
+      * ======================================================================== */
+      body {overflow-y: scroll; touch-action: manipulation;}
+      
+      .navbar {margin-bottom: 10px;}
+      .hidden {display: none;}
+      .invisible {visibility:  hidden;}      
+      
+      #main-form {margin-top: 5px;}
+      #dex-slider {margin-top: 18px;}      
+      #results-pin {display: none;position: absolute;top: -40px;right: 5px;}
+      #result-values {position: relative;min-height: 266px;}
+      
+      .result-docked-top #results-pin {display: block;}
+      .result-docked-top #results-block {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1031;
+        width: 100%;
+        background-color: #3a3f44;
+        background-image: linear-gradient(#484e55, #3a3f44 60%, #313539);
+        border: 1px solid rgba(0,0,0,0.6);
+      }
+      .result-docked-top #results-block h3 {display: none;}
+      .result-docked-top #result-values {
+        max-width: 1070px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .result-docked-top #main-form {margin-top: 25px;}
+      .result-docked-top #results-pin {top: auto;bottom: -5px;}
+      .result-docked-top #dex-slider {display: none;}
+      .result-docked-top #cmp-results-block {display: none;}
+      .result-docked-top #result-values {min-height:  auto;}
+      .total-result-label {min-width: 32px; display: inline-block;}
+      .total-result-value {min-width: 40px; display: inline-block;text-align: right;}
+      
+      .btn-info-alt {
+        color: #ffffff;
+        background-image: -webkit-linear-gradient(#ab74e3, #915bde  60%, #8b4adb);
+        background-image: -o-linear-gradient(#ab74e3, #915bde  60%, #8b4adb);
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#ab74e3), color-stop(60%, #915bde ), to(#8b4adb));
+        background-image: linear-gradient(#ab74e3, #915bde  60%, #8b4adb);
+        background-repeat: no-repeat;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffab74e3', endColorstr='#ff8b4adb', GradientType=0);
+        -webkit-filter: none;
+        filter: none;
+      }
+      .btn-info-alt:hover {
+        background-image: -webkit-linear-gradient(#895cb7, #784bb9  60%, #6b39a9);
+        background-image: -o-linear-gradient(#895cb7, #784bb9  60%, #6b39a9);
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#895cb7), color-stop(60%, #784bb9 ), to(#6b39a9));
+        background-image: linear-gradient(#895cb7, #784bb9  60%, #6b39a9);        
+        background-repeat: no-repeat;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff895cb7', endColorstr='#ff6b39a9', GradientType=0);
+        -webkit-filter: none;
+        filter: none;
+      }
+      .well {padding-bottom: 0;}
+      .form-control {height: 28px;padding: 4px 12px;}
+      .panel .toggle.btn {width: 100%;margin-bottom: 5px;}
+      .panel .toggle.btn label {text-align: left;}
+      .panel .effect-checkbox {width: 100%;}
+      .panel .panel-heading {
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .panel .panel-heading .badge {
+        float: right;
+        border-radius: 50%;
+        position: absolute;
+        right: 7px;
+        top: 11px;
+      }
+      .panel > .panel-heading .badge-info {background-color: #5bc0de;}
+      .panel > .panel-heading .badge-info-alt {background-color: #915bde ;}
+      
+      #gloves-col .placeholder {
+        min-height: 29px;
+      }
+      #weapons-row .weapon-col {
+        float: none;
+        display: inline-block;
+        vertical-align: top;
+        -webkit-transition: width 500ms;
+                transition: width 500ms;
+      }
+      #weapons-row.inline {white-space: nowrap;}      
+      #weapons-row.two-handed .weapon-col {width: 100%;}
+      .weapon-col.abs-right {
+        position: absolute;
+        right: 0;
+      }
+      .toggle.suppressed .toggle-on {background-image: linear-gradient(#a6a6a7, #79797d 60%, #707171);}
+      .toggle.suppressed .toggle-on:hover { background-image: linear-gradient(#8d8d8e, #5d5d5f 60%, #565656);}      
+
+      .toggle.btn {
+        min-height: 30px;
+      }      
+      .toggle .toggle-group { 
+        -webkit-transition: left 0.25s cubic-bezier(.02, .01, .47, 1); 
+           -moz-transition: left 0.25s cubic-bezier(.02, .01, .47, 1); 
+             -o-transition: left 0.25s cubic-bezier(.02, .01, .47, 1); 
+                transition: left 0.25s cubic-bezier(.02, .01, .47, 1); 
+      }      
+      .progress-bar { /* ease */
+        -webkit-transition: width 0.3s cubic-bezier(.02, .01, .47, 1); 
+           -moz-transition: width 0.3s cubic-bezier(.02, .01, .47, 1);
+             -o-transition: width 0.3s cubic-bezier(.02, .01, .47, 1);
+                transition: width 0.3s cubic-bezier(.02, .01, .47, 1);
+      }
+      .progress-bar.oh-attack {
+        opacity: 0.8;
+      }
+      .noUi-target {
+        border: 0 none;
+        outline: 0 none;
+        box-shadow: none;
+      }
+      .noUi-base {
+        background-color: #1c1e22;
+        border-radius: 0;
+        -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+                box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);        
+      }
+      .noUi-connect {
+        background: #62c462;
+      }
+      .noUi-marker-horizontal.noUi-marker {
+        margin-left: -1px;
+        width: 1px;
+        height: 4px;
+        background: #7a8288;
+      }
+      .noUi-marker-horizontal.noUi-marker-large {
+        height: 8px;
+      }
+      .noUi-value {
+        font-size: 75%;
+        line-height: 1.42857143;
+        color: #7a8288;
+      }
+      .noUi-handle {
+        background-color: #3e444c;
+        border-color: #171616;
+        box-shadow: none;
+      }
+      .noUi-pips-horizontal {
+        height:45px;
+      }
+      #base-dex-value,
+      #final-dex-value {
+        display: inline-block;        
+        min-width: 16px;
+        text-align: right;
+      }
+      #buffs-well {
+        min-height: 801px;
+      }
+      #how-it-is-computed {
+        float: right;
+        display: block;
+        font-size: 64%;
+        line-height: 26px;
+        color: #7a8288;
+        text-decoration: none;
+      }
+      #how-it-is-computed:hover {
+        color: #abb1b5;
+      }
+      
+      @media all and (max-width: 767px) {
+        #page-title {
+          text-align: center;
+          font-size: 32px;
+        }
+        #page-info {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .block-title {
+          text-align: center;
+          margin: 0 0 20px;
+        }
+        .block-title .title-text {
+          display: block;
+        }
+        #gloves-col .placeholder {
+          height: 0;
+          min-height: 0;
+        }
+        #results-pin {
+          display: block;
+        }
+        #how-it-is-computed {
+          float: none;
+        }
+      }
+      @media all and (max-width: 414px) {
+        blockquote footer:before, blockquote small:before, 
+        blockquote .small:before {
+          content: '';
+        }
+        #buffs-well {
+          min-height: 1419px;
+        }
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" defer></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.js" defer></script>
+  </head>
+  <body>
+    <div class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <span class="navbar-brand">Pillars of Eternity</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <h1 id="page-title">Speed Calculator</h1>
+      <p id="page-info">version 1.0.3 <a class="text-muted" href="https://forums.obsidian.net/user/160416-maxquest/">by MaxQuest</a></p>     
+      <form class="form-horizontal" id="main-form">
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-xs-12" id="equipment-block">
+            <h3 class="block-title">Equipment</h3>
+            <div class="well">
+              <div class="row">
+                <div class="col-lg-6 col-sm-6 col-xs-12" id="armor-col">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Armor Type</div>
+                    <div class="panel-body">
+                      <select class="form-control">
+                        <option value="0">Naked</option>
+                        <option value="0">Cloth</option>
+                        <option value="0.15">Robe</option>
+                        <option value="0.20">Padded</option>
+                        <option value="0.25">Hide</option>
+                        <option value="0.30">Leather</option>
+                        <option value="0.35">Scale</option>
+                        <option value="0.40">Breastplate</option>
+                        <option value="0.45">Mail</option>
+                        <option value="0.50">Brigandine</option>
+                        <option value="0.50">Plate</option>
+                      </select>
+                      <div class="checkbox">
+                        <label><input type="checkbox" class="property" data-prop="durganized"> Is Durganized</label>
+                      </div>
+                      <div class="checkbox">
+                        <label><input type="checkbox" class="property" data-prop="armored_grace"> Armored Grace</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-sm-6 col-xs-12" id="gloves-col">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Gloves</div>
+                    <div class="panel-body">
+                      <select class="form-control">
+                        <option value="other">Other</option>
+                        <option value="swift_action">Gauntlets of Swift Action</option>
+                        <option value="mourning">Mourning Gloves</option>
+                        <option value="pilferer">Pilferer's Grip</option>
+                      </select>
+                      <div class="placeholder">&nbsp;</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="weapons-row" style="position: relative; overflow: hidden;">
+                <div class="col-lg-6 col-sm-6 col-xs-12 weapon-col" id="mainhand-col">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Mainhand</div>
+                    <div class="panel-body">
+                      <select class="form-control" id="mainhand-select"></select>
+                      <div class="checkbox" data-prop="durganized">
+                        <label><input type="checkbox" class="property" data-prop="durganized"> Is Durganized</label>
+                      </div>
+                      <div class="checkbox" data-prop="speed">
+                        <label><input type="checkbox" class="property" data-prop="speed"> Has Speed <span class="text-muted">(enchant)</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div
+               ><div class="col-lg-6 col-sm-6 col-xs-12 weapon-col" id="offhand-col">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Offhand</div>
+                    <div class="panel-body">
+                      <select class="form-control" id="offhand-select"></select>
+                      <div class="checkbox invisible" data-prop="durganized">
+                        <label><input type="checkbox" class="property" data-prop="durganized"> Is Durganized</label>
+                      </div>
+                      <div class="checkbox invisible" data-prop="speed">
+                        <label><input type="checkbox" class="property" data-prop="speed"> Has Speed <span class="text-muted">(enchant)</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-xs-12" id="effects-block" style="float: right;">
+            <h3 class="block-title">Buffs & Effects</h3>
+            <div class="well" id="buffs-well">        
+              <div class="row">
+                <div class="col-lg-6 col-sm-6 col-xs-12">
+                  <div class="panel panel-default panel-effects" data-id="AttackSpeedMult">
+                    <div class="panel-heading">AttackSpeedMult <span class="badge badge-info">&nbsp;</span></div>
+                    <div class="panel-body"></div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-sm-6 col-xs-12">
+                  <div class="panel panel-default panel-effects" data-id="DualWieldAttackSpeedMult">
+                    <div class="panel-heading">DualWieldAttackSpeedMult <span class="badge badge-info">&nbsp;</span></div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default panel-effects" data-id="MeleeAttackSpeedMult">
+                    <div class="panel-heading">MeleeAttackSpeedMult <span class="badge badge-info">&nbsp;</span></div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default panel-effects" data-id="RangedAttackSpeedMult">
+                    <div class="panel-heading">RangedAttackSpeedMult <span class="badge badge-info">&nbsp;</span></div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default panel-effects" data-id="RateOfFireMult">
+                    <div class="panel-heading">RateOfFireMult <span class="badge badge-info">&nbsp;</span></div>
+                    <div class="panel-body"></div>
+                  </div>
+                  <div class="panel panel-default panel-effects" data-id="ReloadSpeedCoef">
+                    <div class="panel-heading">ReloadSpeedCoef <span class="badge badge-info-alt">&nbsp;</span></div>
+                    <div class="panel-body"></div>
+                  </div>
+                </div>
+              </div>
+            </div>  
+          </div>          
+          <div class="col-lg-6 col-md-6 col-xs-12" id="results-block">            
+            <h3 class="block-title">
+              <span class="title-text">Result</span>
+              <a id="how-it-is-computed" href="https://forums.obsidian.net/topic/86684-mechanics-the-big-attack-speed-conundrum/" target="_blank"><i class="glyphicon glyphicon-link"></i> how it is computed</a>
+            </h3>
+            <div id="result-values">
+              <i class="glyphicon glyphicon-pushpin" id="results-pin"></i>
+              <blockquote style="padding-right: 0;" id="base-results-block">
+                <div class="progress">
+                  <div class="progress-bar                      mh-delay"  style="width: 1.5444%;" title="Delay (4-5 frames)"></div>
+                  <div class="progress-bar progress-bar-success mh-attack" style="width: 11.583%;" title="Attack duration"></div>
+                  <div class="progress-bar progress-bar-warning mh-recovery" style="width: 19.305%;" title="Recovery duration"></div>
+                  <div class="progress-bar progress-bar-danger  mh-reload" style="width: 0%" title="Reload duration"></div>
+                  <div class="progress-bar                      oh-delay hidden"  style="width: 1.5444%;" title="Delay (4-5 frames)"></div>
+                  <div class="progress-bar progress-bar-success oh-attack hidden" style="width: 0%" title="Attack duration"></div>
+                  <div class="progress-bar progress-bar-warning oh-recovery hidden" style="width: 0%;" title="Recovery duration"></div>
+                </div>
+                <small>Base (at <span id="base-dex-value">10</span> DEX): 
+                  <cite title="Speed">
+                    <span class="mh-attack-result">attack: <span class="value">30f</span></span><span 
+                          class="mh-recovery-result">, recovery: <span class="value">50f</span></span><span 
+                          class="mh-reload-result hidden">, reload: <span class="value">150f</span></span><span 
+                          class="oh-attack-result hidden">, attack: <span class="value">30f</span></span><span 
+                          class="oh-recovery-result hidden">, recovery: <span class="value">50f</span></span>
+                  </cite>
+                </small>
+              </blockquote>
+              <blockquote style="padding-right: 0;" id="final-results-block">
+                <div class="progress">
+                  <div class="progress-bar                      mh-delay"  style="width: 1.5444%;" title="Delay (4-5 frames)"></div>
+                  <div class="progress-bar progress-bar-success mh-attack" style="width: 11.583%;" title="Attack duration"></div>
+                  <div class="progress-bar progress-bar-warning mh-recovery" style="width: 19.305%;" title="Recovery duration"></div>
+                  <div class="progress-bar progress-bar-danger  mh-reload" style="width: 0%" title="Reload duration"></div>
+                  <div class="progress-bar                      oh-delay hidden"  style="width: 1.5444%;" title="Delay (4-5 frames)"></div>
+                  <div class="progress-bar progress-bar-success oh-attack hidden" style="width: 0%" title="Attack duration"></div>
+                  <div class="progress-bar progress-bar-warning oh-recovery hidden" style="width: 0%;" title="Recovery duration"></div>
+                </div>
+                <small>Final (at <span id="final-dex-value">10</span> DEX): 
+                  <cite title="Speed">
+                    <span class="mh-attack-result">attack: <span class="value">30f</span></span><span 
+                          class="mh-recovery-result">, recovery: <span class="value">50f</span></span><span 
+                          class="mh-reload-result hidden">, reload: <span class="value">150f</span></span><span 
+                          class="oh-attack-result hidden">, attack: <span class="value">30f</span></span><span 
+                          class="oh-recovery-result hidden">, recovery: <span class="value">50f</span></span>
+                  </cite>
+                </small>
+                <div id="dex-slider" style="min-height: 18px;"></div>
+              </blockquote>
+              <blockquote style="padding-right: 0; padding-top: 30px;" id="cmp-results-block">
+                <small class="base">
+                  <span class="total-result-label">Base</span> 
+                  <span>total:</span>
+                  <cite><span class="total-result-value" title="Including delay">84.0f</span></cite>
+                </small>
+                <small class="final">
+                  <span class="total-result-label">Final</span> 
+                  <span>total:</span>
+                  <cite><span class="total-result-value" title="Including delay">84.0f</span><span class="cmp"></span></cite>
+                </small>
+              </blockquote>
+            </div>            
+          </div>  
+        </div>
+      </form>
+    </div>
+    <script>
+    (function(undefined) {
+
+      var VARS = {};
+      var MAX_ACTION_DURATION = 209;
+      
+      var ATTACK_DURATION_XS = 19.09;
+      var ATTACK_DURATION_SM = 20;
+      var ATTACK_DURATION_MD = 30;
+      var ATTACK_DURATION_LG = 45;
+
+      var NOTHING_ID = 0;
+      var SHIELD_ID = 200;
+      var BASHING_SHIELD_ID = 201;
+      var FIST_ID = 300;
+      var FIST_LONG_PAIN_ID = 301;
+
+      var WIELDABLE_CATEGORIES = {
+        oneHanded: 'One-Handed',
+        twoHandedMelee: 'Two-Handed Melee',
+        twoHandedRanged: 'Two-Handed Ranged',
+        shields: 'Shields',
+        emptyHand: 'Empty Hand'
+      };
+            
+      var WIELDABLES = [
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_MD, "Battle Axe"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Club"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Dagger"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Fist", null, FIST_ID),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Fist (Long Pain)", null, FIST_LONG_PAIN_ID),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Flail"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Hatchet"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Mace"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_XS, "Rapier"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_MD, "Sabre"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_SM, "Spear"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_XS, "Stiletto"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_MD, "Sword"),
+        GenWieldable(WIELDABLE_CATEGORIES.oneHanded, ATTACK_DURATION_MD, "War Hammer"),
+        
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedMelee, ATTACK_DURATION_MD, "Estoc"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedMelee, ATTACK_DURATION_MD, "Great Sword"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedMelee, ATTACK_DURATION_MD, "Morning Star"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedMelee, ATTACK_DURATION_MD, "Pike"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedMelee, ATTACK_DURATION_MD, "Pollaxe"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedMelee, ATTACK_DURATION_MD, "Quarterstaff"),
+        
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "Arbalest", 180),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "Arquebus", 204),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "Blunderbuss", 150),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "Crossbow", 100),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_MD, "Hunting Bow"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "Pistol", 150),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "Rod"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_MD, "Sceptre"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_MD, "Wand"),
+        GenWieldable(WIELDABLE_CATEGORIES.twoHandedRanged, ATTACK_DURATION_LG, "War Bow"),
+        
+        GenWieldable(WIELDABLE_CATEGORIES.shields, null, "Shield", null, SHIELD_ID),
+        GenWieldable(WIELDABLE_CATEGORIES.shields, ATTACK_DURATION_SM, "Shield with Bash", null, BASHING_SHIELD_ID),
+        
+        GenWieldable(WIELDABLE_CATEGORIES.emptyHand, null, "Nothing", null, NOTHING_ID)
+      ];
+      
+      var $MAINHAND_SELECT;
+      var $OFFHAND_SELECT;
+      var $WEAPONS_ROW;
+      
+      var MH_WIELDABLE = GetWieldableById(1);
+      var OH_WIELDABLE = GetWieldableById(NOTHING_ID);
+      
+      var IS_2H_SETUP;
+      var IS_DW_SETUP;
+      var IS_OFFHAND_ATTACKING;
+      
+      var EFFECT_CATEGORIES = {
+        attackSpeedMult: 'AttackSpeedMult',
+        dualWieldAttackSpeedMult: 'DualWieldAttackSpeedMult',
+        meleeAttackSpeedMult: 'MeleeAttackSpeedMult',
+        rangedAttackSpeedMult: 'RangedAttackSpeedMult',
+        rateOfFireMult: 'RateOfFireMult',
+        reloadSpeedCoef: 'ReloadSpeedCoef'
+      };
+      
+      var SUPPRESING_CATEGORIES = {
+        attackSpeedMult1: 'AttackSpeedMult1',
+        reloadSpeedCoef1: 'ReloadSpeedCoef1'
+      };
+      
+      var CURRENT_DEX = 10;
+      var ARMOR_PENALTY = 0;
+      var RESULTS_PER_BLOCK = {};
+      var PREVENT_RESULTS_BLINKING = false;
+      var EFFECT_COEFFICIENTS = {
+        melee: {},
+        ranged: {}
+      };
+      
+      var EFFECTS = [
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.10, "Anitlei (Zahua passive)"),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.20, "Bloodlust"),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 0.80, "Cautious Attack"),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.50, "DAoM Potion", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.33, "Frenzy", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.25, "Hastening Exhortation", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.20, "Nature's Bounty", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.25, "Outlander's Frenzy", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.25, "Potion of Power", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.15, "Svef", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.20, "Swift Aim", SUPPRESING_CATEGORIES.attackSpeedMult1, null, true),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.25, "Swift Strikes", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.40, "Their Champion Chant", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.50, "Time Parasite", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.20, "Vielo Vidorio", SUPPRESING_CATEGORIES.attackSpeedMult1),
+        
+        GenEffect(EFFECT_CATEGORIES.dualWieldAttackSpeedMult, 1.20, "Two-Weapon Style"), 
+        GenEffect(EFFECT_CATEGORIES.meleeAttackSpeedMult, 0.80, "Vulnerable Attack"), 
+        GenEffect(EFFECT_CATEGORIES.rangedAttackSpeedMult, 0.80, "Penetrating Shot"),        
+        GenEffect(EFFECT_CATEGORIES.rateOfFireMult, 1.20, "Sure-Handed Chant", null, null, true),
+        GenEffect(EFFECT_CATEGORIES.rateOfFireMult, 0.80, "Vicious Aim", null, null, true),
+        
+        GenEffect(EFFECT_CATEGORIES.reloadSpeedCoef, 1.20, "Gunner"),
+        GenEffect(EFFECT_CATEGORIES.reloadSpeedCoef, 1.20, "Sure-Handed Chant", SUPPRESING_CATEGORIES.reloadSpeedCoef1, null, true),
+        GenEffect(EFFECT_CATEGORIES.reloadSpeedCoef, 1.50, "Swift Aim", SUPPRESING_CATEGORIES.reloadSpeedCoef1, null, true),
+        GenEffect(EFFECT_CATEGORIES.reloadSpeedCoef, 0.80, "Vicious Aim", null, null, true)
+      ];
+      
+      var GLOVES_EFFECTS = {
+        swift_action: GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.15, "Gauntlets of Swift Action"),
+        mourning: GenEffect(EFFECT_CATEGORIES.attackSpeedMult, 1.10, "Mourning Gloves", SUPPRESING_CATEGORIES.attackSpeedMult1)
+      };
+      
+      var ENABLED_EFFECTS = {};
+      
+      function Init()
+      {
+        document.addEventListener('DOMContentLoaded', function() {
+          InitOnReady();
+        });
+        
+        // document.readyState === "complete" ? InitOnReady()
+        //                                    : $(document).ready(function(){InitOnReady();});
+      }
+
+      function InitOnReady()
+      {
+        $MAINHAND_SELECT = $('#mainhand-select');
+        $OFFHAND_SELECT = $('#offhand-select');
+        $WEAPONS_ROW = $('#weapons-row');
+        
+        PopulateWeaponSelects();
+        PopulateEffects();
+        InitDexSlider();
+        BindEvents();
+        
+        UpdateResults();
+      }
+
+      function InitDexSlider()
+      {
+        var slider = document.getElementById('dex-slider');
+        var sliderValue = document.getElementById('final-dex-value');
+
+        noUiSlider.create(slider, {
+          start: 10,
+          connect: [true, false],
+          step: 1,
+          range: {
+            'min': 2,
+            'max': 43
+          },
+          pips: {
+            mode: 'values',
+            values: [10, 20, 30, 40],
+            density: 15
+          }
+        });
+        
+        slider.noUiSlider.on('update', function(values, handle) {
+          CURRENT_DEX = Math.round(values[handle]);
+          sliderValue.innerHTML = CURRENT_DEX;
+          PREVENT_RESULTS_BLINKING = true;
+          UpdateResults();
+        });
+      }
+
+      function BindEvents()
+      {
+        $('#results-pin').on('click', function() {
+          $('body').toggleClass('result-docked-top');
+        });
+        
+        $MAINHAND_SELECT.on('change', function() {
+          OnMainhandChange(this.value);
+        });
+        
+        $OFFHAND_SELECT.on('change', function() {
+          OnOffhandChange(this.value);
+        });
+        
+        $('#armor-col select').on('change', function() {
+          UpdateResults();
+        });
+        
+        $('#gloves-col select').on('change', function() {
+          var glovesName = this.value;
+          var glovesEffect = GLOVES_EFFECTS[glovesName];
+          
+          for (var glovesId in GLOVES_EFFECTS)
+            ToggleEnabledEffect(glovesName == glovesId, glovesId, GLOVES_EFFECTS[glovesId]);
+          
+          if (glovesEffect != null && glovesEffect.suppressingCategory)
+            UpdateSuppression();
+          
+          UpdateResults();
+        });
+        
+        $('#equipment-block .property[type="checkbox"]').on('change', function() {
+          UpdateResults();
+        });
+        
+        var $effectsBlock = $('#effects-block');
+        var lockPropagation = false;
+        $effectsBlock.on('change', '.effect-checkbox', function() {
+          if (lockPropagation)
+            return;
+          
+          var $checkbox = $(this);
+          var isChecked = $checkbox.prop('checked');
+          var effect = GetEffectById($checkbox.data('id'));
+          
+          ToggleEnabledEffect(isChecked, effect.id, effect);
+          
+          if (effect.multieffect)
+          {
+            var siblingEffect = GetEffectWithTheSameTitle(effect);
+            
+            if (siblingEffect)
+            {
+              lockPropagation = true;
+              $effectsBlock.find('.effect-checkbox[data-id="' + siblingEffect.id + '"]')
+                           .bootstrapToggle(isChecked ? 'on' : 'off');
+              
+              ToggleEnabledEffect(isChecked, siblingEffect.id, siblingEffect);
+              lockPropagation = false;
+            }
+          }
+          
+          if (effect.suppressingCategory)
+            UpdateSuppression();
+          
+          UpdateResults(); 
+        });
+      }
+      
+      function ToggleEnabledEffect(status, effectId, effect)
+      {
+        effect = effect || GetEffectById(effectId);
+        
+        if (effect == null)
+          return;
+        
+        if (status)
+          ENABLED_EFFECTS[effectId] = effect;
+        else
+          delete ENABLED_EFFECTS[effectId];
+      }
+      
+      /* ****************************** EVENTS ****************************** */
+
+      function OnMainhandChange(wieldableId)
+      {
+        MH_WIELDABLE = GetWieldableById(wieldableId);
+        
+        var $container = GetMainhandCol();
+        var $checkboxDurganized = $container.find('.checkbox[data-prop="durganized"]');
+        var $checkboxSpeed = $container.find('.checkbox[data-prop="speed"]');
+        
+        $checkboxDurganized.toggleClass('invisible', !WieldableCanBeDurganized(MH_WIELDABLE));        
+        $checkboxSpeed.toggleClass('invisible', !WieldableCanHaveSpeed(MH_WIELDABLE));
+        
+        // adjust fist options:
+        if (!WieldableIsFist(MH_WIELDABLE) && WieldableIsFist(OH_WIELDABLE))
+        {
+          SetSelectWieldable('offhand', NOTHING_ID, true);
+        }
+        
+        if (WieldableIsFist(MH_WIELDABLE) && (OH_WIELDABLE.id == NOTHING_ID || WieldableIsFist(OH_WIELDABLE)))
+        {
+          SetSelectWieldable('offhand', MH_WIELDABLE.id, true);  // force dw fists
+        }
+                
+        UpdateSetupConfig();
+        UpdateResults(); 
+      }
+      
+      function OnOffhandChange(wieldableId)
+      {
+        OH_WIELDABLE = GetWieldableById(wieldableId);
+        
+        var $container = GetOffhandCol();
+        var $checkboxDurganized = $container.find('.checkbox[data-prop="durganized"]');
+        var $checkboxSpeed = $container.find('.checkbox[data-prop="speed"]');
+        
+        $checkboxDurganized.toggleClass('invisible', !WieldableCanBeDurganized(OH_WIELDABLE));        
+        $checkboxSpeed.toggleClass('invisible', !WieldableCanHaveSpeed(OH_WIELDABLE));
+        
+        // adjust fist options:
+        if (WieldableIsFist(MH_WIELDABLE) && OH_WIELDABLE.id == NOTHING_ID)
+        {
+          SetSelectWieldable('mainhand', 1, true);
+        }
+        
+        if (WieldableIsFist(OH_WIELDABLE) && MH_WIELDABLE.id != OH_WIELDABLE.id)
+        {
+          SetSelectWieldable('mainhand', OH_WIELDABLE.id, true); // force dw fists
+        }
+        
+        if (MH_WIELDABLE.id == FIST_LONG_PAIN_ID && OH_WIELDABLE.id != FIST_LONG_PAIN_ID)
+        {
+          var recommendedMHId = OH_WIELDABLE.category == WIELDABLE_CATEGORIES.oneHanded ? OH_WIELDABLE.id : 1;
+          SetSelectWieldable('mainhand', recommendedMHId, true);
+        }
+        
+        UpdateSetupConfig();
+        UpdateResults();        
+      }
+      
+      /* ****************************** GETTERS ***************************** */
+      
+      function GenWieldable(category, attackDuration, title, reloadDuration, forcedId)
+      {
+        var wieldableId = null;
+        
+        if (typeof forcedId !== 'undefined' && forcedId != null) 
+        {
+          wieldableId = forcedId;
+        }
+        else
+        {
+          VARS.WIELDABLE_ID = VARS.WIELDABLE_ID || 0;
+          VARS.WIELDABLE_ID++;
+          wieldableId = VARS.WIELDABLE_ID;
+        }
+        
+        return {
+          id: wieldableId,
+          title: title,
+          category: category,
+          attackDuration: attackDuration,
+          reloadDuration: reloadDuration || null
+        };
+      }
+
+      function GetWieldableById(id)
+      {
+        for (var i in WIELDABLES)
+          if (WIELDABLES[i].id == id)
+            return WIELDABLES[i];
+        
+        return null;
+      }
+      
+      function GenEffect(category, value, title, suppressingCategory, forcedId, multieffect)
+      {
+        var effectId = null;
+        
+        if (typeof forcedId !== 'undefined' && forcedId != null) 
+        {
+          effectId = forcedId;
+        }
+        else
+        {
+          VARS.EFFECT_ID = VARS.EFFECT_ID || 0;
+          VARS.EFFECT_ID++;
+          effectId = VARS.EFFECT_ID;
+        }
+              
+        return {
+          id: effectId,
+          title: title,
+          value: value,
+          category: category,          
+          suppressingCategory: suppressingCategory || null,
+          suppressed: false,
+          multieffect: multieffect ? true : false
+        };
+      }
+      
+      function GetEffectById(id)
+      {
+        for (var i in EFFECTS)
+          if (EFFECTS[i].id == id)
+            return EFFECTS[i];
+        
+        return null;
+      }
+      
+      function GetEffectWithTheSameTitle(effect)
+      {
+        for (var i in EFFECTS)
+          if (EFFECTS[i].title == effect.title && EFFECTS[i].id != effect.id)
+            return EFFECTS[i];
+        
+        return null;
+      }
+      
+      function GetEnabledEffectsCoefficients(category)
+      {
+        var coefficients = [];
+        var effect = null;
+        
+        for (var i in ENABLED_EFFECTS)
+        {
+          effect = ENABLED_EFFECTS[i];
+          
+          if (effect.category == category && effect.suppressed == false)
+            coefficients.push(effect.value);
+        }
+        
+        return coefficients;
+      }
+      
+      function GetBaseResultsBlock()
+      {
+        if (VARS.$BASE_RESULTS_BLOCK == null)
+          VARS.$BASE_RESULTS_BLOCK = $('#base-results-block');
+        
+        return VARS.$BASE_RESULTS_BLOCK;
+      }
+      
+      function GetFinalResultsBlock()
+      {
+        if (VARS.$FINAL_RESULTS_BLOCK == null)
+          VARS.$FINAL_RESULTS_BLOCK = $('#final-results-block');
+        
+        return VARS.$FINAL_RESULTS_BLOCK;
+      }
+      
+      function GetMainhandCol()
+      {
+        if (VARS.$MAINHAND_COL == null)
+          VARS.$MAINHAND_COL = $('#mainhand-col');
+        
+        return VARS.$MAINHAND_COL;
+      }
+      
+      function GetOffhandCol()
+      {
+        if (VARS.$OFFHAND_COL == null)
+          VARS.$OFFHAND_COL = $('#offhand-col');
+        
+        return VARS.$OFFHAND_COL;
+      }
+      
+      /* ****************************** ACTIONS ***************************** */
+
+      function SetSelectWieldable(hand, wieldableId, triggerChange) 
+      {
+        var $container = hand == 'mainhand' ? GetMainhandCol() : GetOffhandCol();
+        var $select = $container.find('select');
+                
+        $select.val(wieldableId);
+        
+        if (triggerChange && hand == 'mainhand')
+          OnMainhandChange(wieldableId);
+        
+        if (triggerChange && hand == 'offhand')
+          OnOffhandChange(wieldableId);
+      }
+
+      function PopulateWeaponSelects()
+      {
+        PopulateMainhandSelect();
+        PopulateOffhandSelect();
+      }
+      
+      function PopulateMainhandSelect()
+      {
+        var categories = [
+          WIELDABLE_CATEGORIES.oneHanded, 
+          WIELDABLE_CATEGORIES.twoHandedMelee, 
+          WIELDABLE_CATEGORIES.twoHandedRanged
+        ];
+        
+        PopulateWieldableSelect($MAINHAND_SELECT, categories, WIELDABLES);       
+      }
+      
+      function PopulateOffhandSelect()
+      {
+        var categories = [
+          WIELDABLE_CATEGORIES.emptyHand,
+          WIELDABLE_CATEGORIES.shields,
+          WIELDABLE_CATEGORIES.oneHanded
+        ]; 
+        PopulateWieldableSelect($OFFHAND_SELECT, categories, WIELDABLES); 
+      }
+      
+       function PopulateWieldableSelect($select, categories, vars)
+      {
+        for (var i in categories)
+        {
+          var category = categories[i];
+          var $optgroup = $('<optgroup/>').attr('label', category);
+          
+          for (var k in vars)
+          {
+            var item = vars[k];
+            
+            if (item.category !== category)
+              continue;
+            
+            $('<option />').html(item.title).attr('value', item.id).appendTo($optgroup);
+          }
+          $optgroup.appendTo($select);
+        }
+      }
+      
+      function PopulateEffects()
+      {
+        PopulateEffectsPanel(EFFECT_CATEGORIES.attackSpeedMult);
+        PopulateEffectsPanel(EFFECT_CATEGORIES.dualWieldAttackSpeedMult);
+        PopulateEffectsPanel(EFFECT_CATEGORIES.meleeAttackSpeedMult);
+        PopulateEffectsPanel(EFFECT_CATEGORIES.rangedAttackSpeedMult);
+        PopulateEffectsPanel(EFFECT_CATEGORIES.rateOfFireMult);
+        PopulateEffectsPanel(EFFECT_CATEGORIES.reloadSpeedCoef, 'info-alt');
+      }
+      
+      function PopulateEffectsPanel(category, style)
+      {
+        var $panel = $('.panel-effects[data-id="' + category + '"]');        
+        var effectsHtml = '';
+        style = style || 'info';
+        
+        for (var i in EFFECTS)
+        {
+          var effect = EFFECTS[i];
+          
+          if (effect.category == category)
+            effectsHtml+= 
+              '<input class="effect-checkbox" type="checkbox" ' + 
+                     'data-id="' + effect.id + '"' +
+                     'data-toggle="toggle" ' + 
+                     'data-on="' + effect.title + '" ' + 
+                     'data-off="' + effect.title + '" ' + 
+                     'data-onstyle="' + style + '" ' + 
+                     'data-width="100%" ' + 
+                     'data-height="30px"/>';
+        }
+        $panel.find('.panel-body').html(effectsHtml);
+        $panel.find('.panel-body input').bootstrapToggle();
+      }
+            
+      function PopulateBaseResults(data) 
+      {
+        PopulateResults(data, GetBaseResultsBlock());
+      }
+      
+      function PopulateFinalResults(data) 
+      {
+        PopulateResults(data, GetFinalResultsBlock());
+      }
+      
+      function PopulateResults(data, $block) 
+      {
+        if (!data || !$block)
+          return;
+        
+        var blockId = $block.attr('id');
+        var oldData = RESULTS_PER_BLOCK[blockId] || null;
+        var totalFramesPrev = GetTotalFrames(oldData);
+        var totalFrames = GetTotalFrames(data);
+        RESULTS_PER_BLOCK[blockId] = data;
+        
+        var delay = IS_2H_SETUP ? 5 : 4;       
+        var mhAttack= data.mh && data.mh.attack ? data.mh.attack : 0;
+        var mhRecovery = data.mh && data.mh.recovery ? data.mh.recovery : 0;
+        var mhReload = data.mh && data.mh.reload ? data.mh.reload : 0;
+        
+        var ohAttack = data.oh && data.oh.attack ? data.oh.attack : 0;
+        var ohRecovery = data.oh && data.oh.recovery ? data.oh.recovery : 0;
+        
+        var maxDuration = MAX_ACTION_DURATION;
+        $block.find('.mh-delay').width(GetPercStr(delay / maxDuration));
+        $block.find('.mh-attack').width(GetPercStr(mhAttack / maxDuration));
+        $block.find('.mh-recovery').width(GetPercStr(mhRecovery / maxDuration));
+        $block.find('.mh-reload').width(GetPercStr(mhReload / maxDuration));
+        
+        $block.find('.oh-delay').width(GetPercStr(delay / maxDuration));
+        $block.find('.oh-attack').width(GetPercStr(ohAttack / maxDuration));
+        $block.find('.oh-recovery').width(GetPercStr(ohRecovery / maxDuration));
+        
+        $block.find('.mh-attack-result .value').html(GetRoundedValue(mhAttack) + 'f');
+        $block.find('.mh-recovery-result .value').html(GetRoundedValue(mhRecovery) + 'f');
+        $block.find('.mh-reload-result .value').html(GetRoundedValue(mhReload) + 'f');
+        $block.find('.oh-attack-result .value').html(GetRoundedValue(ohAttack) + 'f');
+        $block.find('.oh-recovery-result .value').html(GetRoundedValue(ohRecovery) + 'f');
+        
+        $block.find('.mh-reload-result').toggleClass('hidden', mhReload <= 0);
+        $block.find('.oh-delay').toggleClass('hidden', !IS_OFFHAND_ATTACKING);
+        $block.find('.oh-attack-result').toggleClass('hidden', !IS_OFFHAND_ATTACKING);
+        $block.find('.oh-recovery-result').toggleClass('hidden', !IS_OFFHAND_ATTACKING);
+                
+        if (totalFrames == totalFramesPrev && !PREVENT_RESULTS_BLINKING)
+          $block.find('.progress').animate({ opacity: 0.5 }, 250)
+                                  .animate({ opacity: 1.0 }, 250);
+      }
+      
+      function PopulateCmpResults(baseValues, finalValues)
+      {
+        var totalFramesBase = GetTotalFrames(baseValues);
+        var totalFramesFinal = GetTotalFrames(finalValues);
+        
+        var totalFramesBaseStr = String(GetRoundedValue(totalFramesBase));
+        var totalFramesFinalStr = String(GetRoundedValue(totalFramesFinal));
+        
+        totalFramesBaseStr+= totalFramesBaseStr.indexOf('.') >= 0 ? '' : '.0';
+        totalFramesFinalStr+= totalFramesFinalStr.indexOf('.') >= 0 ? '' : '.0';
+        
+        var $block = $('#cmp-results-block');
+        $block.find('.base .total-result-value').html(totalFramesBaseStr + 'f');
+        $block.find('.final .total-result-value').html(totalFramesFinalStr + 'f');
+        
+        var cmpStr = totalFramesFinal < totalFramesBase ? 'faster' : 'slower';
+        var coef = totalFramesFinal / totalFramesBase;        
+        coef = coef > 1 ? coef : 1 / coef;
+        coef = Math.round(coef * 100) / 100;
+        var message = coef == 1 ? '' : ', or x' + coef + ' ' + cmpStr;
+        $block.find('.cmp').html(message);
+      }
+      
+      function UpdateSetupConfig() 
+      {
+        var was2H = IS_2H_SETUP;
+        
+        IS_2H_SETUP = MH_WIELDABLE.category == WIELDABLE_CATEGORIES.twoHandedMelee ||
+                      MH_WIELDABLE.category == WIELDABLE_CATEGORIES.twoHandedRanged;
+        
+        IS_DW_SETUP = MH_WIELDABLE.category == WIELDABLE_CATEGORIES.oneHanded &&
+                      OH_WIELDABLE.category == WIELDABLE_CATEGORIES.oneHanded &&
+                     !IS_2H_SETUP;
+        
+        IS_OFFHAND_ATTACKING = (OH_WIELDABLE.category == WIELDABLE_CATEGORIES.oneHanded ||
+                                OH_WIELDABLE.id == BASHING_SHIELD_ID) && !IS_2H_SETUP;
+                
+        if (!was2H && IS_2H_SETUP)
+          $WEAPONS_ROW.addClass('two-handed inline');
+        
+        if (was2H && !IS_2H_SETUP)
+        {
+          $WEAPONS_ROW.removeClass('two-handed');
+          setTimeout(function(){ $WEAPONS_ROW.removeClass('inline'); }, 500);
+        }
+        
+        var $block = $('#results-block');
+        $block.find('.oh-attack').toggleClass('hidden', !IS_OFFHAND_ATTACKING);
+        $block.find('.oh-recovery').toggleClass('hidden', !IS_OFFHAND_ATTACKING);
+      }
+      
+      function UpdateMaxActionDuration(baseValues, finalValues)
+      {
+        var totalFramesBase = GetTotalFrames(baseValues);
+        var totalFramesFinal = GetTotalFrames(finalValues);
+        
+        var delay = IS_2H_SETUP ? 5 : 4;
+        var maxDuration = 1.7 * ATTACK_DURATION_LG * 16 / 6 + delay + 50;
+        
+        if (IS_OFFHAND_ATTACKING)
+          maxDuration+= delay;
+        
+        if (baseValues && baseValues.mh && baseValues.mh.reload > 0)
+          maxDuration+= 250;
+                
+        maxDuration = Math.max(maxDuration, totalFramesBase);
+        maxDuration = Math.max(maxDuration, totalFramesFinal);
+        MAX_ACTION_DURATION = maxDuration + 1;
+      }
+      
+      function UpdateSuppression()
+      {
+        var $effectsBlock = $('#effects-block');
+        
+        for (var i in SUPPRESING_CATEGORIES)
+        {
+          var suppressingCategory = SUPPRESING_CATEGORIES[i];
+          var unsuppresedEffect = null;
+          
+          for (var j in ENABLED_EFFECTS)
+          {
+            var effect = ENABLED_EFFECTS[j];
+            
+            if (effect.suppressingCategory == suppressingCategory)
+            {
+              if (unsuppresedEffect == null ||
+                 (effect.value > 1 && effect.value > unsuppresedEffect.value) ||
+                 (effect.value < 1 && effect.value < unsuppresedEffect.value))
+                unsuppresedEffect = effect;
+            }
+          }
+          
+          for (var j in ENABLED_EFFECTS)
+          {
+            var effect = ENABLED_EFFECTS[j];
+            if (effect.suppressingCategory != suppressingCategory)
+              continue;
+            
+            var $checkbox = $effectsBlock.find('.effect-checkbox[data-id="' + effect.id + '"]');
+            var $toggle = $checkbox.parent();
+            var isSuppressed = effect.id != unsuppresedEffect.id;
+            var title = isSuppressed ? 'Suppressed by ' + unsuppresedEffect.title : '';
+            
+            ENABLED_EFFECTS[j].suppressed = isSuppressed;
+            $toggle.toggleClass('suppressed', isSuppressed);
+            $toggle.prop('title', title);
+          }
+        }
+      }
+      
+      function UpdateEffectCoefficients()
+      {
+        var meleeCategories = [
+          EFFECT_CATEGORIES.attackSpeedMult,
+          EFFECT_CATEGORIES.dualWieldAttackSpeedMult,
+          EFFECT_CATEGORIES.meleeAttackSpeedMult
+        ];
+        
+        var rangedCategories = [
+          EFFECT_CATEGORIES.attackSpeedMult,
+          EFFECT_CATEGORIES.dualWieldAttackSpeedMult,
+          EFFECT_CATEGORIES.rangedAttackSpeedMult,
+          EFFECT_CATEGORIES.rateOfFireMult,
+          EFFECT_CATEGORIES.reloadSpeedCoef
+        ];
+        
+        UpdateEffectCoefficientsByRange('melee', meleeCategories);
+        UpdateEffectCoefficientsByRange('ranged', rangedCategories);
+      }
+      
+      function UpdateEffectCoefficientsByRange(range, categories)
+      {
+        for (var i in categories)
+        {
+          var category = categories[i];
+          
+          if (category == EFFECT_CATEGORIES.dualWieldAttackSpeedMult && !IS_DW_SETUP)
+            continue;
+          
+          EFFECT_COEFFICIENTS[range][category] = MultArrayValues(GetEnabledEffectsCoefficients(category));
+        }
+      }
+      
+      function UpdateResults()
+      {
+        UpdateEffectCoefficients();
+        UpdateArmorPenaltyValue();
+        
+        var baseValues = ComputeBaseValues();
+        var finalValues = ComputeFinalValues(baseValues);
+        UpdateMaxActionDuration(baseValues, finalValues);
+            
+        PopulateBaseResults(baseValues);
+        PopulateFinalResults(finalValues);
+        PopulateCmpResults(baseValues, finalValues);
+        PREVENT_RESULTS_BLINKING = false;
+      }
+      
+      function UpdateArmorPenaltyValue()
+      {
+        var $container = $('#armor-col');        
+        var isDurganized = $container.find('.property[data-prop="durganized"]').is(':checked');
+        var withArmoredGrace = $container.find('.property[data-prop="armored_grace"]').is(':checked');
+        var withPilfererGloves = $('#gloves-col select').val() == 'pilferer';
+        
+        var penalty = $container.find("select").val();
+        var foo = isDurganized ? 0.15 : 0;
+            foo = foo == 0 && withPilfererGloves ? 0.10 : foo; // pilferer can be surppressed
+        var bar = withArmoredGrace ? 0.20 : 0;
+        
+        ARMOR_PENALTY = Math.max(0, penalty - foo - bar);
+        return ARMOR_PENALTY;
+      }
+      
+      /* ******************************************************************** */
+      
+      function ComputeBaseValues()
+      {
+        var values = [];
+        
+        if (MH_WIELDABLE != null)
+        {
+          var mhRecovery = Math.round(100 * MH_WIELDABLE.attackDuration / 0.6) / 100;
+              mhRecovery/= IS_DW_SETUP ? 2 : 1; 
+          
+          values.mh = {
+            attack: MH_WIELDABLE.attackDuration,
+            recovery: mhRecovery,
+            reload: MH_WIELDABLE.reloadDuration
+          };
+        }
+        
+        if (IS_OFFHAND_ATTACKING)
+        {
+          var ohRecovery = Math.round(100 * OH_WIELDABLE.attackDuration / 0.6 / 2) / 100;
+          
+          values.oh = {
+            attack: OH_WIELDABLE.attackDuration,
+            recovery: ohRecovery,
+            reload: null
+          };
+        }
+        
+        return values;
+      }
+      
+      function ComputeFinalValues(values)
+      {
+        values = jQuery.extend(true, {}, values || ComputeBaseValues());
+        var cats = EFFECT_CATEGORIES;
+        var coefs = WieldableIsRanged(MH_WIELDABLE) ? EFFECT_COEFFICIENTS.ranged
+                                                    : EFFECT_COEFFICIENTS.melee;
+                   
+        var dexCoef = GetDexCoef(CURRENT_DEX);
+        if (values.mh && values.mh.reload && coefs[cats.reloadSpeedCoef])
+          values.mh.reload/= coefs[cats.reloadSpeedCoef] * dexCoef;
+        
+        var speedCoefMH = ComputeMainhandSpeedCoef();
+        var speedCoefOH = ComputeOffhandSpeedCoef();
+        
+        var recoveryCoefMH = Math.max(0, 1 - 2 * speedCoefMH) / 1.2;
+        var recoveryCoefOH = Math.max(0, 1 - 2 * speedCoefOH) / 1.2;
+                
+        if (values.mh && values.mh.attack)
+        {
+          values.mh.attack/= dexCoef;
+          values.mh.recovery = values.mh.attack * recoveryCoefMH;
+        }
+        
+        if (values.oh && values.oh.attack)
+        {
+          values.oh.attack/= dexCoef;
+          values.oh.recovery = values.oh.attack * recoveryCoefOH;
+        }
+        
+        return values;
+      }
+      
+      function ComputeMainhandSpeedCoef()
+      {
+        if (MH_WIELDABLE == null)
+          return 0;
+        
+        var speedCoef = 0;
+        var cats = EFFECT_CATEGORIES;
+        var coefs = WieldableIsRanged(MH_WIELDABLE) ? EFFECT_COEFFICIENTS.ranged
+                                                    : EFFECT_COEFFICIENTS.melee;
+        var coefficients = jQuery.extend(true, {}, coefs);
+        
+        var $container = GetMainhandCol();
+        var durganizedCheckboxChecked = $container.find('.property[data-prop="durganized"]').is(':checked');
+        var speedCheckboxChecked = $container.find('.property[data-prop="speed"]').is(':checked');
+        
+        var isDurganized = durganizedCheckboxChecked && WieldableCanBeDurganized(MH_WIELDABLE);
+        var hasSpeed = speedCheckboxChecked && WieldableCanHaveSpeed(MH_WIELDABLE);
+        
+        for (var category in coefficients)
+        {
+          if (!IsMultiplicativeRecoveryCategory(category))
+            continue;
+          
+          var coef = coefficients[category];
+
+          if (category == cats.attackSpeedMult && isDurganized)
+            coef*= 1.15;
+
+          if (category == cats.attackSpeedMult && hasSpeed)
+            coef*= 1.20;
+
+          speedCoef+= coef - 1;          
+        }
+        
+        if (!IS_DW_SETUP)
+        {
+          speedCoef-= HasDurganizedShieldInOffhand() ? 0.35 : 0.5;
+        }
+        
+        return speedCoef - ARMOR_PENALTY;
+      }
+      
+      function ComputeOffhandSpeedCoef()
+      {
+        if (OH_WIELDABLE == null)
+          return 0;
+        
+        var speedCoef = 0;
+        var cats = EFFECT_CATEGORIES;
+        var coefs = WieldableIsRanged(OH_WIELDABLE) ? EFFECT_COEFFICIENTS.ranged
+                                                    : EFFECT_COEFFICIENTS.melee;
+        var coefficients = jQuery.extend(true, {}, coefs);
+        
+        var $container = GetOffhandCol();
+        var durganizedCheckboxChecked = $container.find('.property[data-prop="durganized"]').is(':checked');
+        var speedCheckboxChecked = $container.find('.property[data-prop="speed"]').is(':checked');
+        
+        var isDurganized = durganizedCheckboxChecked && WieldableCanBeDurganized(OH_WIELDABLE);
+        var hasSpeed = speedCheckboxChecked && WieldableCanHaveSpeed(OH_WIELDABLE);
+        
+        for (var category in coefficients)
+        {
+          if (!IsMultiplicativeRecoveryCategory(category))
+            continue;
+          
+          var coef = coefficients[category];
+
+          if (category == cats.attackSpeedMult && isDurganized && OH_WIELDABLE.category != WIELDABLE_CATEGORIES.shields)
+            coef*= 1.15;
+
+          if (category == cats.attackSpeedMult && hasSpeed && OH_WIELDABLE.category != WIELDABLE_CATEGORIES.shields)
+            coef*= 1.20;
+
+          speedCoef+= coef - 1;
+        }
+        
+        return speedCoef - ARMOR_PENALTY;
+      }
+      
+      /* ****************************** UTILS ******************************* */
+      
+      function GetTotalFrames(data, dex)
+      {
+        var total = 0;
+        
+        if (!data)
+          return total;
+        
+        var delay = IS_2H_SETUP ? 5 : 4;
+        var dexCoef = GetDexCoef(dex || 10);
+        dexCoef = 1;
+        total+= data.mh && data.mh.attack ? data.mh.attack : 0;
+        total+= data.mh && data.mh.recovery ? data.mh.recovery : 0;
+        total+= data.mh && data.mh.reload ? data.mh.reload : 0;        
+        total+= data.oh && data.oh.attack ? data.oh.attack : 0;
+        total+= data.oh && data.oh.attack ? data.oh.recovery : 0;
+        
+        total/= dexCoef;
+        total+= delay;
+        total+= data.oh && data.oh.attack ? delay : 0;
+        
+        return GetRoundedValue(total);
+      }
+      
+      function GetDexCoef(dex)
+      {
+        dex = dex || CURRENT_DEX;
+        return 1 + (dex - 10) / 33.3;
+      }
+      
+      function WieldableIsRanged(wieldable)
+      {
+        return wieldable != null && (
+               wieldable.category == WIELDABLE_CATEGORIES.twoHandedRanged ||
+               wieldable.id == FIST_LONG_PAIN_ID);
+      }
+      
+      function WieldableIsFist(wieldable)
+      {
+        return wieldable != null && (wieldable.id == FIST_ID || wieldable.id == FIST_LONG_PAIN_ID);
+      }
+      
+      function IsMultiplicativeRecoveryCategory(category)
+      {
+        return $.inArray(category, [
+          EFFECT_CATEGORIES.attackSpeedMult,
+          EFFECT_CATEGORIES.dualWieldAttackSpeedMult,
+          EFFECT_CATEGORIES.meleeAttackSpeedMult,
+          EFFECT_CATEGORIES.rangedAttackSpeedMult,
+          EFFECT_CATEGORIES.rateOfFireMult
+        ]) >= 0;
+      }
+      
+      function HasDurganizedShieldInOffhand()
+      {
+        if (OH_WIELDABLE == null || OH_WIELDABLE.category != WIELDABLE_CATEGORIES.shields)
+          return false;
+        
+        var $container = GetOffhandCol();
+        return $container.find('.property[data-prop="durganized"]').is(':checked');
+      }
+      
+      function WieldableCanBeDurganized(wieldable)
+      {
+        return wieldable != null && !WieldableIsFist(wieldable) && $.inArray(wieldable.category, [
+          WIELDABLE_CATEGORIES.emptyHand
+        ]) < 0;
+      }
+      
+      function WieldableCanHaveSpeed(wieldable)
+      {
+        return wieldable != null && !WieldableIsFist(wieldable) && $.inArray(wieldable.category, [
+          WIELDABLE_CATEGORIES.emptyHand,
+          WIELDABLE_CATEGORIES.shields
+        ]) < 0;
+      }
+            
+      function GetPercStr(floatVal)
+      {
+        return (floatVal * 100) + '%';
+      }
+      
+      function GetRoundedValue(floatVal)
+      {
+        return Math.round(floatVal * 10) / 10;
+      }
+            
+      function MultArrayValues(arr)
+      {
+        var foo = 1;
+        
+        for (var i in arr)
+          foo*= arr[i];
+        
+        return foo;
+      }
+      
+      /* ******************************************************************** */
+
+      Init();
+
+      /* ******************************************************************** */
+
+    })();
+    </script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-96748479-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>
